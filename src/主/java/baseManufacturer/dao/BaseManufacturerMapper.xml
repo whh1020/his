@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.baseManufacturer.dao.IBaseManufacturerDao"> 
+	<!-- 自定义结果集 --> 
+	<resultMap id="BaseResultMap" type="com.qhit.baseManufacturer.pojo.BaseManufacturer"> 
+		<id property="manCode" column="man_Code" javaType="java.lang.Integer"></id> 
+		<result property="note" column="note" javaType="java.lang.String"></result> 
+		<result property="py1" column="py1" javaType="java.lang.String"></result> 
+		<result property="manChnName" column="man_chn_name" javaType="java.lang.String"></result> 
+		<result property="manEngDesc" column="man_eng_desc" javaType="java.lang.String"></result> 
+		<result property="manAbsName" column="man_abs_name" javaType="java.lang.String"></result> 
+		<result property="address" column="address" javaType="java.lang.String"></result> 
+		<result property="faxNo" column="fax_no" javaType="java.lang.String"></result> 
+		<result property="nationCode" column="nation_code" javaType="java.lang.String"></result> 
+		<result property="postCode" column="post_code" javaType="java.lang.String"></result> 
+		<result property="telNo" column="tel_no" javaType="java.lang.String"></result> 
+		<result property="website" column="website" javaType="java.lang.String"></result> 
+		<result property="email" column="email" javaType="java.lang.String"></result> 
+		<result property="stateCode" column="state_code" javaType="java.lang.String"></result> 
+		<result property="cityCode" column="city_code" javaType="java.lang.String"></result> 
+	</resultMap> 
+ 
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<sql id="Base_Column_List" > 
+		man_Code,note,py1,man_chn_name,man_eng_desc,man_abs_name,address,fax_no,nation_code,post_code,tel_no,website,email,state_code,city_code 
+	</sql> 
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where man_Code = #{manCode} 
+	</select> 
+	<delete id="delete" parameterType="java.lang.Integer" > 
+		delete from base_manufacturer 
+		where man_Code = #{manCode} 
+	</delete> 
+	<insert id="insert" parameterType="com.qhit.baseManufacturer.pojo.BaseManufacturer" > 
+		insert into base_manufacturer(note,py1,man_chn_name,man_eng_desc,man_abs_name,address,fax_no,nation_code,post_code,tel_no,website,email,state_code,city_code) 
+		values (#{note},#{py1},#{manChnName},#{manEngDesc},#{manAbsName},#{address},#{faxNo},#{nationCode},#{postCode},#{telNo},#{website},#{email},#{stateCode},#{cityCode}) 
+	</insert> 
+	<update id="updateSelective" parameterType="com.qhit.baseManufacturer.pojo.BaseManufacturer" > 
+		update base_manufacturer 
+		<set > 
+			<if test="note != null and note!='' " > 
+				note = #{note}, 
+			</if> 
+			<if test="py1 != null and py1!='' " > 
+				py1 = #{py1}, 
+			</if> 
+			<if test="manChnName != null and manChnName!='' " > 
+				man_chn_name = #{manChnName}, 
+			</if> 
+			<if test="manEngDesc != null and manEngDesc!='' " > 
+				man_eng_desc = #{manEngDesc}, 
+			</if> 
+			<if test="manAbsName != null and manAbsName!='' " > 
+				man_abs_name = #{manAbsName}, 
+			</if> 
+			<if test="address != null and address!='' " > 
+				address = #{address}, 
+			</if> 
+			<if test="faxNo != null and faxNo!='' " > 
+				fax_no = #{faxNo}, 
+			</if> 
+			<if test="nationCode != null and nationCode!='' " > 
+				nation_code = #{nationCode}, 
+			</if> 
+			<if test="postCode != null and postCode!='' " > 
+				post_code = #{postCode}, 
+			</if> 
+			<if test="telNo != null and telNo!='' " > 
+				tel_no = #{telNo}, 
+			</if> 
+			<if test="website != null and website!='' " > 
+				website = #{website}, 
+			</if> 
+			<if test="email != null and email!='' " > 
+				email = #{email}, 
+			</if> 
+			<if test="stateCode != null and stateCode!='' " > 
+				state_code = #{stateCode}, 
+			</if> 
+			<if test="cityCode != null and cityCode!='' " > 
+				city_code = #{cityCode}, 
+			</if> 
+		</set> 
+		where man_Code = #{manCode} 
+	</update> 
+	<update id="update" parameterType="com.qhit.baseManufacturer.pojo.BaseManufacturer" > 
+		update base_manufacturer 
+		set  note = #{note}, py1 = #{py1}, man_chn_name = #{manChnName}, man_eng_desc = #{manEngDesc}, man_abs_name = #{manAbsName}, address = #{address}, fax_no = #{faxNo}, nation_code = #{nationCode}, post_code = #{postCode}, tel_no = #{telNo}, website = #{website}, email = #{email}, state_code = #{stateCode}, city_code = #{cityCode} 
+		where man_Code = #{manCode} 
+	</update> 
+	<select id="findAll" resultMap="BaseResultMap" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+	</select> 
+	<select id="findByNote" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where note = #{note} 
+	</select> 
+	<select id="findByPy1" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where py1 = #{py1} 
+	</select> 
+	<select id="findByManChnName" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where man_chn_name = #{manChnName} 
+	</select> 
+	<select id="findByManEngDesc" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where man_eng_desc = #{manEngDesc} 
+	</select> 
+	<select id="findByManAbsName" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where man_abs_name = #{manAbsName} 
+	</select> 
+	<select id="findByAddress" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where address = #{address} 
+	</select> 
+	<select id="findByFaxNo" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where fax_no = #{faxNo} 
+	</select> 
+	<select id="findByNationCode" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where nation_code = #{nationCode} 
+	</select> 
+	<select id="findByPostCode" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where post_code = #{postCode} 
+	</select> 
+	<select id="findByTelNo" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where tel_no = #{telNo} 
+	</select> 
+	<select id="findByWebsite" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where website = #{website} 
+	</select> 
+	<select id="findByEmail" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where email = #{email} 
+	</select> 
+	<select id="findByStateCode" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where state_code = #{stateCode} 
+	</select> 
+	<select id="findByCityCode" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_manufacturer 
+		where city_code = #{cityCode} 
+	</select> 
+	<delete id="deleteBatch" parameterType="java.util.Arrays"> 
+		delete from base_manufacturer where man_Code in 
+		<foreach collection="array" item="id" open="(" close=")" separator=","> 
+			#{id} 
+		</foreach> 
+	</delete> 
+	<select id="search" parameterType="com.qhit.baseManufacturer.pojo.BaseManufacturer" resultMap="BaseResultMap"> 
+		select * from  base_manufacturer 
+		<where > 
+			<if test="note != null and note!='' " > 
+				 and note = #{note} 
+			</if> 
+			<if test="py1 != null and py1!='' " > 
+				 and py1 = #{py1} 
+			</if> 
+			<if test="manChnName != null and manChnName!='' " > 
+				 and man_chn_name = #{manChnName} 
+			</if> 
+			<if test="manEngDesc != null and manEngDesc!='' " > 
+				 and man_eng_desc = #{manEngDesc} 
+			</if> 
+			<if test="manAbsName != null and manAbsName!='' " > 
+				 and man_abs_name = #{manAbsName} 
+			</if> 
+			<if test="address != null and address!='' " > 
+				 and address = #{address} 
+			</if> 
+			<if test="faxNo != null and faxNo!='' " > 
+				 and fax_no = #{faxNo} 
+			</if> 
+			<if test="nationCode != null and nationCode!='' " > 
+				 and nation_code = #{nationCode} 
+			</if> 
+			<if test="postCode != null and postCode!='' " > 
+				 and post_code = #{postCode} 
+			</if> 
+			<if test="telNo != null and telNo!='' " > 
+				 and tel_no = #{telNo} 
+			</if> 
+			<if test="website != null and website!='' " > 
+				 and website = #{website} 
+			</if> 
+			<if test="email != null and email!='' " > 
+				 and email = #{email} 
+			</if> 
+			<if test="stateCode != null and stateCode!='' " > 
+				 and state_code = #{stateCode} 
+			</if> 
+			<if test="cityCode != null and cityCode!='' " > 
+				 and city_code = #{cityCode} 
+			</if> 
+		</where> 
+	</select> 
+</mapper> 
