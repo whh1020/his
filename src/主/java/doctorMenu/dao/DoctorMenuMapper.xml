@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.doctorMenu.dao.IDoctorMenuDao"> 
+	<!-- 自定义结果集 --> 
+	<resultMap id="BaseResultMap" type="com.qhit.doctorMenu.pojo.DoctorMenu"> 
+		<id property="menuId" column="menu_id" javaType="java.lang.Integer"></id> 
+		<result property="menuName" column="menu_name" javaType="java.lang.String"></result> 
+		<result property="userId" column="user_id" javaType="java.lang.Integer"></result> 
+		<result property="description" column="description" javaType="java.lang.String"></result> 
+		<result property="type" column="type" javaType="java.lang.Integer"></result> 
+		<result property="typedesc" column="typedesc" javaType="java.lang.String"></result>
+		<association property="baseUser" select="com.qhit.baseUser.dao.IBaseUserDao.findById" column="user_id"></association>
+	</resultMap>
+	<resultMap id="doctorMenuMedicineResultMap" type="com.qhit.doctorMenuMedicine.pojo.DoctorMenuMedicine">
+		<result property="amt" column="amt"></result>
+		<result property="codeId" column="code_id"></result>
+		<association property="medicineCode" javaType="com.qhit.medicineCode.pojo.MedicineCode">
+			<result property="medicineName" column="MEDICINE_NAME"></result>
+		</association>
+	</resultMap>
+ 
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<select id="findAll" resultMap="BaseResultMap">
+		select t.*,case t.type when 1 then '仅自己可用' when 2 then '全科室可用' when 3 then '所有医生可用' else t.type end as typedesc
+		from doctor_menu t
+	</select>
+	<select id="findById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select * from doctor_menu where menu_id = #{id}
+	</select>
+	<insert id="insert" parameterType="com.qhit.doctorMenu.pojo.DoctorMenu">
+		insert into doctor_menu(menu_name,user_id,description,type) values(#{menuName},#{userId},#{description},#{type})
+	</insert>
+	<update id="updateSelective" parameterType="com.qhit.doctorMenu.pojo.DoctorMenu">
+		update doctor_menu
+		<set>
+			<if test="menuName!=null and menuName!=''">
+				menu_name = #{menuName},
+			</if>
+			<if test="userId!=null and userId!=''">
+				user_id = #{userId},
+			</if>
+			<if test="description!=null and description!=''">
+				description = #{description},
+			</if>
+			<if test="type!=null and type!=''">
+				type = #{type},
+			</if>
+		</set>
+		where menu_id = #{menuId}
+	</update>
+	<update id="update" parameterType="com.qhit.doctorMenu.pojo.DoctorMenu">
+		update doctor_menu set menu_name = #{menuName},user_id = #{userId},description = #{description},type = #{type}
+		where menu_id = #{menuId}
+	</update>
+	<delete id="delete" parameterType="com.qhit.doctorMenu.pojo.DoctorMenu">
+		delete from doctor_menu where menu_id = #{menuId}
+	</delete>
+	
+	<delete id="deleteBatch" parameterType="java.util.Arrays">
+		delete from doctor_menu where menu_id in
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<select id="search" parameterType="com.qhit.doctorMenu.pojo.DoctorMenu" resultMap="BaseResultMap">
+		select t.*,case t.type when 1 then '仅自己可用' when 2 then '全科室可用' when 3 then '所有医生可用' else t.type end as typedesc,bu.cname
+		from doctor_menu t join base_user bu on t.user_id = bu.user_id
+		<where>
+			<if test="menuName!=null and menuName!=''">
+				and menu_name like "%"#{menuName}"%"
+			</if>
+			<if test="userId!=null and userId!=''">
+				and user_id = #{userId}
+			</if>
+			<if test="description!=null and description!=''">
+				and description = #{description}
+			</if>
+			<if test="type!=null and type!=''">
+				and type = #{type}
+			</if>
+		</where>
+	</select>
+	<select id="distributeLeft" resultMap="doctorMenuMedicineResultMap">
+		select mc.MEDICINE_NAME,dmm.code_id,dmm.amt from
+		medicine_code mc join doctor_menu_medicine dmm on mc.code_id=dmm.code_id and dmm.menu_id = #{0}
+	</select>
+	<select id="distributeRight" resultMap="doctorMenuMedicineResultMap">
+		select mc.MEDICINE_NAME,mc.code_id,1 as amt from
+		medicine_code mc where mc.code_id not in (
+			select mc.code_id from
+			medicine_code mc join doctor_menu_medicine dmm on mc.code_id=dmm.code_id and dmm.menu_id = #{0}
+		)
+	</select>
+	<select id="findUsableDoctorMenu" resultMap="BaseResultMap">
+		select dm.* from doctor_menu dm where dm.type=1 and dm.user_id =#{0}
+		union
+		select dm.* from doctor_menu dm where dm.type=3
+		union
+		select dm.* from doctor_menu dm
+		where dm.type=2 and dm.user_id in (
+		  select bu.user_id
+		  from base_user bu where bu.dept_id = (select bu.dept_id from base_user bu where bu.user_id=#{0})
+		)
+	</select>
+
+</mapper> 
